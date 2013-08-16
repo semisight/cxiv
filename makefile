@@ -1,2 +1,2 @@
 all:
-	clang cxiv.c -o cxiv
+	clang cxiv.c -g -o cxiv
