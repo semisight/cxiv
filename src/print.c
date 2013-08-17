@@ -9,7 +9,16 @@ void print(obj* in) {
         printf("%s\n", in->bool_value ? "true" : "false");
         break;
     case CHAR:
-        printf("#\\%c\n", in->char_value);
+        switch(in->char_value) {
+        case ' ':
+            printf("#\\space\n");
+            break;
+        case '\n':
+            printf("#\\newline\n");
+            break;
+        default:
+            printf("#\\%c\n", in->char_value);
+        }
         break;
     case STRING:
         printf("%s\n", in->string_value);
