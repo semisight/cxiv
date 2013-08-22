@@ -9,6 +9,8 @@
  * Prints an object tree.
  */
 
+void print_list(obj* in);
+
 void print(obj* in);
 
 #endif

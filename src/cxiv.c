@@ -12,6 +12,9 @@
 
 int main(int argc, char const *argv[]) {
 
+    // setup
+    make_globals();
+
     obj* intermed;
 
     while(1) {
@@ -19,7 +22,7 @@ int main(int argc, char const *argv[]) {
         intermed = read(stdin);
         intermed = eval(intermed);
         print(intermed);
-        printf("\n");
+        printf("\n\n");
     }
 
     return 0;

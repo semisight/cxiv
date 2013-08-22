@@ -3,7 +3,7 @@
 // Predicates
 
 int is_delim(int c) {
-    return isspace(c) || c == EOF || c == '"' || c == ';';
+    return isspace(c) || c == EOF || c == '"' || c == ';' || c == ')';
 }
 
 // Stream processors
@@ -129,6 +129,40 @@ char* read_string(char c, FILE* in) {
     return buf;
 }
 
+obj* read_pair(FILE* in) {
+
+    consume_whitespace(in);
+
+    if(peek(in) == ')') {
+        getc(in);
+        return val_nil;
+    }
+
+    // otherwise, must be a pair.
+    obj* first = read(in);
+
+    consume_whitespace(in);
+
+    // Improper pair
+    if(peek(in) == '.') {
+        // Get rid of dot.
+        getc(in);
+
+        obj* second = read(in);
+
+        consume_whitespace(in);
+
+        if(peek(in) != ')')
+            die("Expected a close paren.");
+
+        getc(in);
+
+        return cons(first, second);
+    } else {
+        return cons(first, read_pair(in));
+    }
+}
+
 obj* read(FILE* in) {
     int c;
 
@@ -144,6 +178,8 @@ obj* read(FILE* in) {
         return new_char(read_char(c, in));
     } else if(c == '"') {
         return new_string(read_string(c, in));
+    } else if(c == '(') {
+        return read_pair(in);
     } else if(c == EOF) {
         printf("Thanks!\n");
         exit(1);

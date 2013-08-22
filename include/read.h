@@ -37,6 +37,8 @@ char read_char(char, FILE*);
 
 char* read_string(char, FILE*);
 
+obj* read_pair(FILE*);
+
 obj* read(FILE*);
 
 #endif
