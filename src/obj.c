@@ -7,8 +7,6 @@ void make_globals() {
 
     val_false->bool_value = 0;
     val_true->bool_value = 1;
-    val_nil->pair.car = NULL;
-    val_nil->pair.cdr = val_nil;
 }
 
 obj* new_obj(obj_type type) {
@@ -62,9 +60,17 @@ obj* cons(obj* first, obj* second) {
 }
 
 obj* car(obj* in) {
+    if(in->type != PAIR)
+        die("Cannot get car of non-pair.");
+
     return in->pair.car;
 }
 
 obj* cdr(obj* in) {
-    return in->pair.cdr;
+    if(in->type == PAIR)
+        return in->pair.cdr;
+    if(in->type == NIL)
+        return val_nil;
+
+    die("Cannot get cdr of non-pair.");
 }
