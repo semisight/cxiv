@@ -73,4 +73,5 @@ obj* cdr(obj* in) {
         return val_nil;
 
     die("Cannot get cdr of non-pair.");
+    return 0; // For clang.
 }

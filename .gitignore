@@ -1,4 +1,5 @@
 .DS_Store
 cxiv
+hash
 *.dSYM
 src/obj/*
