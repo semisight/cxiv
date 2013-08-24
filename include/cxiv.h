@@ -10,6 +10,8 @@ obj* val_false;
 obj* val_true;
 obj* val_nil;
 
-symmap* sym_tbl;
+symmap* sym_cache;
+
+obj* sym_quote;
 
 #endif

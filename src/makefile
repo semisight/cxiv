@@ -2,7 +2,7 @@ IDIR=../include
 ODIR=obj
 
 CC=clang
-CFLAGS=-I$(IDIR) -g
+CFLAGS=-I$(IDIR) -g -Wall
 
 _DEPS = util.h obj.h read.h eval.h print.h hash.h cxiv.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
@@ -26,3 +26,4 @@ hash: $(H_OBJ)
 
 clean:
 	rm -f $(ODIR)/*.o *~ core $(IDIR)/*~
+	rm cxiv hash

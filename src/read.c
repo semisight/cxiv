@@ -223,18 +223,26 @@ obj* read(FILE* in) {
 
     c = getc(in);
 
-    if(isdigit(c) || (is_in(c, "+-") && isdigit(peek(in)))) {
+    if(isdigit(c) || (is_in(c, "+-") && isdigit(peek(in)))) {   // number
         return new_number(read_num(c, in));
-    } else if(c == '#' && is_in(peek(in), "tf")) {
+    } else if(c == '#' && is_in(peek(in), "tf")) {              // boolean
         return new_boolean(read_bool(c, in));
-    } else if(c == '#' && peek(in) == '\\') {
+    } else if(c == '#' && peek(in) == '\\') {                   // char
         return new_char(read_char(c, in));
-    } else if(c == '"') {
-        return new_string(read_string(c, in));
-    } else if(c == '(') {
+    } else if(c == '"') {                                       // string
+        char* str = read_string(c, in);
+        obj* o = new_string(str);
+        free(str);
+        return o;
+    } else if(c == '(') {                                       // list/nil
         return read_pair(in);
-    } else if(is_initial(c) || is_in(c, "+-")) {
-        return new_symbol(read_symbol(c, in));
+    } else if(is_initial(c) || is_in(c, "+-")) {                // symbol
+        char* str = read_symbol(c, in);
+        obj* o = new_symbol(str);
+        free(str);
+        return o;
+    } else if(c == '\'') {                                      // quoted sexp
+        return cons(sym_quote, cons(read(in), val_nil));
     } else if(c == EOF) {
         printf("Thanks!\n");
         exit(1);

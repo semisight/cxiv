@@ -9,7 +9,9 @@ void make_globals() {
     val_false->bool_value = 0;
     val_true->bool_value = 1;
 
-    sym_tbl = new_map();
+    sym_cache = new_map();
+
+    sym_quote = new_symbol("quote");
 }
 
 obj* new_obj(obj_type type) {
@@ -40,24 +42,25 @@ obj* new_char(char input) {
     return o;
 }
 
-// The new object will *own* the input string. If you plan to free it then
-// copy it first.
+// Will *not* own the input. Req'd because it may accept const char*s which it
+// should not free.
 obj* new_string(char* input) {
     obj* o = new_obj(STRING);
-    o->string_value = input;
+    o->string_value = fulcpy(input);
 
     return o;
 }
 
-// Like new_string(), this will own the input string.
+// Will *not* own the input. Req'd because it may accept const char*s which it
+// should not free.
 obj* new_symbol(char* input) {
     obj* o;
 
-    if(!(o = map_get(sym_tbl, input))) {
+    if(!(o = map_get(sym_cache, input))) {
         o = new_obj(SYMBOL);
-        o->symbol_value = input;
+        o->symbol_value = fulcpy(input);
 
-        map_put(sym_tbl, input, o);
+        map_put(sym_cache, input, o);
     }
 
     return o;

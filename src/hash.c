@@ -50,7 +50,6 @@ int find_idx_key(symmap* m, char* key) {
     int init = hash_str(key) % m->capacity;
 
     for(int i=0; i < m->capacity; i++) {
-        printf("checking key %d.\n", i);
         int idx = (init + i) % m->capacity; // Search at init first.
 
         cell* c = &m->map[idx];
