@@ -2,8 +2,20 @@
 
 // Predicates
 
+int is_in(int c, const char* list) {
+    for(size_t i=0; i<strlen(list); i++)
+        if((char)c == list[i])
+            return 1;
+
+    return 0;
+}
+
 int is_delim(int c) {
-    return isspace(c) || c == EOF || c == '"' || c == ';' || c == ')';
+    return isspace(c) || c == EOF || c == ';' || c == ')';
+}
+
+int is_initial(int c) {
+    return isalpha(c) || is_in(c, "!$%&*/:<=>?^_~");
 }
 
 // Stream processors
@@ -48,10 +60,12 @@ double read_num(char c, FILE* in) {
     double num = 0;
     int sign = 1;
 
-    if(c == '-')
-        sign = -1;
-    else
+    if(is_in(c, "+-")) {
+        if(c == '-')
+            sign = -1;
+    } else {
         ungetc(c, in);
+    }
 
     while(isdigit(c = getc(in)))
         num = 10*num + (c - '0');
@@ -93,12 +107,19 @@ char read_char(char c, FILE* in) {
 }
 
 char* read_string(char c, FILE* in) {
-    char* buf = malloc(sizeof(char)*BUFFER_INIT);
+    char* buf = malloc(sizeof(char) * BUFFER_INIT);
     unsigned int cur = 0, max = BUFFER_INIT;
 
     while((c = getc(in)) != '"') {
         if(c == EOF)
             die("Reached EOF before \" character.");
+
+        // Check if we've hit our limit (save room for null-terminator)
+        if(cur == max-1) {
+            // If so, double our capacity
+            max *= 2;
+            buf = realloc(buf, sizeof(char) * max);
+        }
 
         if(c == '\\') {
             switch(c = getc(in)) {
@@ -117,14 +138,45 @@ char* read_string(char c, FILE* in) {
         } else {
             buf[cur++] = c;
         }
+    }
 
-        // Check if we've hit our limit
-        if(cur == max) {
+    buf[cur] = '\0';
+
+    return buf;
+}
+
+char* read_symbol(char c, FILE* in) {
+    if(is_in(c, "+-")) {
+        if(!isspace(peek(in)) && !is_delim(peek(in)))
+            die("+ or - are single letter symbols.");
+        
+        return (c == '+') ? "+" : "-";
+    }
+
+    ungetc(c, in);
+
+    char* buf = malloc(sizeof(char) * BUFFER_INIT);
+    unsigned int cur = 0, max = BUFFER_INIT;
+
+    while((c = getc(in)) != EOF) {
+        // Check if we're done reading.
+        if(!isdigit(c) && !is_initial(c) && !is_in(c, "+-.@")) {
+            ungetc(c, in);
+            break;
+        }
+
+        // Check if we've hit our limit (save room for null-terminator)
+        if(cur == max-1) {
             // If so, double our capacity
             max *= 2;
             buf = realloc(buf, sizeof(char) * max);
         }
+
+        // Otherwise copy in.
+        buf[cur++] = c;
     }
+
+    buf[cur] = '\0';
 
     return buf;
 }
@@ -170,9 +222,9 @@ obj* read(FILE* in) {
 
     c = getc(in);
 
-    if(isdigit(c) || (c == '-' && isdigit(peek(in)))) {
+    if(isdigit(c) || (is_in(c, "+-") && isdigit(peek(in)))) {
         return new_number(read_num(c, in));
-    } else if(c == '#' && (peek(in) == 't' || peek(in) == 'f')) {
+    } else if(c == '#' && is_in(peek(in), "tf")) {
         return new_boolean(read_bool(c, in));
     } else if(c == '#' && peek(in) == '\\') {
         return new_char(read_char(c, in));
@@ -180,6 +232,8 @@ obj* read(FILE* in) {
         return new_string(read_string(c, in));
     } else if(c == '(') {
         return read_pair(in);
+    } else if(is_initial(c) || is_in(c, "+-")) {
+        return new_symbol(read_symbol(c, in));
     } else if(c == EOF) {
         printf("Thanks!\n");
         exit(1);

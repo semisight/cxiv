@@ -40,6 +40,9 @@ void print(obj* in) {
     case STRING:
         printf("\"%s\"", in->string_value);
         break;
+    case SYMBOL:
+        printf("%s", in->symbol_value);
+        break;
     case NIL:
         printf("nil");
         break;

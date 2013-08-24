@@ -18,7 +18,8 @@ typedef enum {
     CHAR,
     STRING,
     NIL,
-    PAIR
+    PAIR,
+    SYMBOL
 } obj_type;
 
 typedef struct obj_t {
@@ -28,6 +29,7 @@ typedef struct obj_t {
         int bool_value;
         char char_value;
         char* string_value;
+        char* symbol_value;
         struct {
             struct obj_t* car;
             struct obj_t* cdr;
@@ -58,5 +60,7 @@ obj* cons(obj*, obj*);
 obj* car(obj*);
 
 obj* cdr(obj*);
+
+obj* new_symbol(char* input);
 
 #endif

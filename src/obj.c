@@ -37,15 +37,11 @@ obj* new_char(char input) {
     return o;
 }
 
+// The new object will *own* the input string. If you plan to free it then
+// copy it first.
 obj* new_string(char* input) {
     obj* o = new_obj(STRING);
-    char* value;
-
-    size_t len = strlen(input);
-    value = malloc(sizeof(char)*len);
-    strncpy(value, input, len);
-
-    o->string_value = value;
+    o->string_value = input;
 
     return o;
 }
@@ -74,4 +70,12 @@ obj* cdr(obj* in) {
 
     die("Cannot get cdr of non-pair.");
     return 0; // For clang.
+}
+
+// Like new_string(), this will own the input string.
+obj* new_symbol(char* input) {
+    obj* o = new_obj(SYMBOL);
+    o->symbol_value = input;
+
+    return o;
 }

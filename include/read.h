@@ -19,7 +19,11 @@
 
 // Predicates
 
-int is_delim(int c);
+int is_in(int, const char*);
+
+int is_delim(int);
+
+int is_initial(int);
 
 // Stream processors
 
@@ -36,6 +40,8 @@ int read_bool(char, FILE*);
 char read_char(char, FILE*);
 
 char* read_string(char, FILE*);
+
+char* read_symbol(char, FILE*);
 
 obj* read_pair(FILE*);
 
