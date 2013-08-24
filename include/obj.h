@@ -37,12 +37,6 @@ typedef struct obj_t {
     };
 } obj;
 
-// globals
-
-obj* val_false;
-obj* val_true;
-obj* val_nil;
-
 void make_globals();
 
 obj* new_obj(obj_type type);

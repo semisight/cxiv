@@ -1,3 +1,4 @@
+#include "cxiv.h"
 #include "obj.h"
 
 void make_globals() {
@@ -7,6 +8,8 @@ void make_globals() {
 
     val_false->bool_value = 0;
     val_true->bool_value = 1;
+
+    sym_tbl = new_map();
 }
 
 obj* new_obj(obj_type type) {
@@ -46,6 +49,20 @@ obj* new_string(char* input) {
     return o;
 }
 
+// Like new_string(), this will own the input string.
+obj* new_symbol(char* input) {
+    obj* o;
+
+    if(!(o = map_get(sym_tbl, input))) {
+        o = new_obj(SYMBOL);
+        o->symbol_value = input;
+
+        map_put(sym_tbl, input, o);
+    }
+
+    return o;
+}
+
 obj* cons(obj* first, obj* second) {
     obj* o = new_obj(PAIR);
 
@@ -70,12 +87,4 @@ obj* cdr(obj* in) {
 
     die("Cannot get cdr of non-pair.");
     return 0; // For clang.
-}
-
-// Like new_string(), this will own the input string.
-obj* new_symbol(char* input) {
-    obj* o = new_obj(SYMBOL);
-    o->symbol_value = input;
-
-    return o;
 }
