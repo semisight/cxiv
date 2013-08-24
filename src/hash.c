@@ -146,3 +146,34 @@ void map_del(symmap* m, char* key) {
     c->key = NULL;
     c->val = NULL;
 }
+
+map_iter map_start() {
+    map_iter it = malloc(sizeof(map_iter));
+    *it = 0;
+
+    return it;
+}
+
+cell* map_next(symmap* m, map_iter it) {
+    while(*it < m->capacity) {
+        if(m->map[*it].key)
+            return &m->map[(*it)++];
+
+        (*it)++;
+    }
+
+    return NULL;
+}
+
+int map_contains(symmap* m, char* key) {
+    map_iter i = map_start();
+    cell* cur;
+    while((cur = map_next(m, i))) {
+        // Check if we've found a matching key.
+        if(strcmp(cur->key, key) == 0)
+            return 1;
+    }
+
+    // If we find nothing, return false.
+    return 0;
+}

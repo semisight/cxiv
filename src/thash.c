@@ -23,9 +23,11 @@ int main(int argc, char const *argv[]) {
     map_put(m, "world", new_number(3.0));
     map_put(m, "haiku", new_number(4.5));
 
-    check_map(m, "world");
-    check_map(m, "blah");
-    check_map(m, "haiku");
+    map_iter i = map_start();
+    cell* cur;
+    while((cur = map_next(m, i))) {
+        printf("%s: %f\n", cur->key, cur->val->num_value);
+    }
 
     return 0;
 }

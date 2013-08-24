@@ -21,6 +21,8 @@ typedef struct {
     unsigned int capacity;
 } symmap;
 
+typedef unsigned int* map_iter;
+
 uint32_t hash_str(char*);
 
 symmap* new_map();
@@ -30,5 +32,11 @@ void map_put(symmap*, char*, obj*);
 obj* map_get(symmap*, char*);
 
 void map_del(symmap*, char*);
+
+map_iter map_start();
+
+cell* map_next(symmap*, map_iter);
+
+int map_contains(symmap*, char*);
 
 #endif
