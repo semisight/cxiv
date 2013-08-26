@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "util.h"
-#include "hash.h"
 
 /*
  * obj.h
@@ -24,6 +23,8 @@ typedef enum {
     MAP
 } obj_type;
 
+struct map_t;
+
 typedef struct obj_t {
     obj_type type;
     union {
@@ -32,7 +33,7 @@ typedef struct obj_t {
         char char_value;
         char* string_value;
         char* symbol_value;
-        map map_value;
+        struct map_t* map_value;
         struct {
             struct obj_t* car;
             struct obj_t* cdr;

@@ -1,4 +1,5 @@
 #include "print.h"
+#include "hash.h"
 
 void print_list(obj* in) {
     print(car(in));
@@ -15,6 +16,21 @@ void print_list(obj* in) {
         printf(" . ");
         print(cdr(in));
     }
+}
+
+void print_map(obj* in) {
+    map_iter i = map_start();
+    cell* cur;
+
+    printf("{");
+
+    while((cur = map_next(in->map_value, i))) {
+        print(cur->key);
+        printf(": ");
+        print(cur->val);
+    }
+
+    printf("}");
 }
 
 void print(obj* in) {
@@ -50,6 +66,9 @@ void print(obj* in) {
         printf("(");
         print_list(in);
         printf(")");
+        break;
+    case MAP:
+        print_map(in);
         break;
     }
 }

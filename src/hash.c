@@ -1,3 +1,5 @@
+#include "cxiv.h"
+#include "obj.h"
 #include "hash.h"
 
 // Private functions
@@ -112,6 +114,17 @@ uint32_t hash_str(char* str) {
     return hash;
 }
 
+uint32_t hash_map(map* in) {
+        map_iter i = map_start();
+        cell* cur;
+        uint32_t hash = 0;
+
+        while((cur = map_next(in, i))) {
+            hash += hash_obj(cur->key) + hash_obj(cur->val);
+        }
+        return hash;
+}
+
 uint32_t hash_obj(obj* in) {
     switch(in->type) {
     case NUMBER:
@@ -129,13 +142,7 @@ uint32_t hash_obj(obj* in) {
     case SYMBOL:
         return hash_str(in->symbol_value);
     case MAP:
-        map_iter i = map_start();
-        cell* cur;
-        uint32_t hash = 0;
-
-        while((cur = map_next(in->map_value, i))) {
-            hash += hash_obj(cur->key) + hash_obj(cur->val);
-        }
+        return hash_map(in->map_value);
     }
 }
 

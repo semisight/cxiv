@@ -113,15 +113,15 @@ int is_equal(obj* a, obj* b) {
     case SYMBOL:
         return a == b;
     case MAP:
-        if(a->size != b->size) // If sizes are equal...
+        if(a->map_value->size != b->map_value->size) // If sizes are equal...
             return false;
 
         // We have to check to see if everything in a is also in b
         map_iter i = map_start();
         cell* cur;
 
-        while((cur = map_next(a, i))) {
-            if(map_get(b, cur->key) != cur->val)
+        while((cur = map_next(a->map_value, i))) {
+            if(map_get(b->map_value, cur->key) != cur->val)
                 return false;
         }
 

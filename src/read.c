@@ -243,6 +243,8 @@ obj* read(FILE* in) {
         return o;
     } else if(c == '\'') {                                      // quoted sexp
         return cons(sym_quote, cons(read(in), val_nil));
+    } else if(c == '{') {
+        //return read_map();
     } else if(c == EOF) {
         printf("Thanks!\n");
         exit(1);

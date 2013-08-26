@@ -11,6 +11,8 @@
 
 void print_list(obj* in);
 
+void print_map(obj* in);
+
 void print(obj* in);
 
 #endif

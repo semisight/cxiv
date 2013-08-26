@@ -8,9 +8,6 @@
 #include <stdint.h>
 
 #include "obj.h"
-#include "util.h"
-
-struct obj_t;
 
 typedef enum {
     SYM,
@@ -19,10 +16,10 @@ typedef enum {
 
 typedef struct {
     void* key;
-    obj_t* val;
+    obj* val;
 } cell;
 
-typedef struct {
+typedef struct map_t {
     map_type type;
     cell* map;
     unsigned int size;
@@ -35,13 +32,15 @@ typedef unsigned int* map_iter;
 
 uint32_t hash_str(char*);
 
-uint32_t hash_obj(obj_t*);
+uint32_t hash_map(map*);
+
+uint32_t hash_obj(obj*);
 
 map* new_map(map_type);
 
-void map_put(map*, void*, obj_t*);
+void map_put(map*, void*, obj*);
 
-obj_t* map_get(map*, void*);
+obj* map_get(map*, void*);
 
 void map_del(map*, void*);
 
