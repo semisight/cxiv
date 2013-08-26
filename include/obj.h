@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "util.h"
+#include "hash.h"
 
 /*
  * obj.h
@@ -19,7 +20,8 @@ typedef enum {
     STRING,
     NIL,
     PAIR,
-    SYMBOL
+    SYMBOL,
+    MAP
 } obj_type;
 
 typedef struct obj_t {
@@ -30,6 +32,7 @@ typedef struct obj_t {
         char char_value;
         char* string_value;
         char* symbol_value;
+        map map_value;
         struct {
             struct obj_t* car;
             struct obj_t* cdr;
@@ -69,5 +72,7 @@ obj* cdr(obj*);
 #define cdddr(obj) cdr(cdr(cdr(obj)))
 
 obj* new_symbol(char* input);
+
+int is_equal(obj*, obj*);
 
 #endif

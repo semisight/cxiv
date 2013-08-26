@@ -4,13 +4,15 @@
 
 void clear(cell*, int);
 
-void grow_map(symmap*);
+void grow_map(map*);
 
-int find_idx_key(symmap*, char*);
+int find_idx_key(map*, void*);
 
-int find_idx_empty(symmap*, char*);
+int find_idx_empty(map*, void*);
 
-void map_put_nogrow(symmap*, char*, obj*);
+void map_put_nogrow(map*, void*, obj*);
+
+int cmpkey(map*, void*, void*);
 
 void clear(cell* arr, int size) {
     for(int i=0; i<size; i++) {
@@ -19,7 +21,7 @@ void clear(cell* arr, int size) {
     }
 }
 
-void grow_map(symmap* m) {
+void grow_map(map* m) {
     // Strategy: save original cell array, then create a new blank one.
     // Iterate through the old one and repopulate the new one.
 
@@ -46,8 +48,9 @@ void grow_map(symmap* m) {
     free(old);
 }
 
-int find_idx_key(symmap* m, char* key) {
-    int init = hash_str(key) % m->capacity;
+int find_idx_key(map* m, void* key) {
+    int init = m->type == SYM ? hash_str(key) : hash_obj(key);
+    init = init % m->capacity;
 
     for(int i=0; i < m->capacity; i++) {
         int idx = (init + i) % m->capacity; // Search at init first.
@@ -58,17 +61,18 @@ int find_idx_key(symmap* m, char* key) {
         if(!c->key)
             return -1;
 
-        if(strcmp(c->key, key) == 0) {
+        if(cmpkey(m, c->key, key))
             return idx;
-        }
+
     }
 
     // If we get here, we didn't find it. Return -1 as error code.
     return -1;
 }
 
-int find_idx_empty(symmap* m, char* key) {
-    int idx = hash_str(key) % m->capacity;
+int find_idx_empty(map* m, void* key) {
+    int idx = m->type == SYM ? hash_str(key) : hash_obj(key);
+    idx = idx % m->capacity;
 
     while(m->map[idx].val)
         idx++;
@@ -76,7 +80,7 @@ int find_idx_empty(symmap* m, char* key) {
     return idx;
 }
 
-void map_put_nogrow(symmap* m, char* key, obj* val) {
+void map_put_nogrow(map* m, void* key, obj* val) {
     int idx = find_idx_empty(m, key);
 
     cell* c = &m->map[idx];
@@ -85,6 +89,14 @@ void map_put_nogrow(symmap* m, char* key, obj* val) {
     c->val = val;
 
     m->size++;
+}
+
+int cmpkey(map* m, void* a, void* b) {
+    if(m->type == SYM) {
+        return strcmp(a, b) == 0;
+    } else {
+        return is_equal(a, b);
+    }
 }
 
 // Public functions
@@ -100,8 +112,35 @@ uint32_t hash_str(char* str) {
     return hash;
 }
 
-symmap* new_map() {
-    symmap* m = malloc(sizeof(symmap));
+uint32_t hash_obj(obj* in) {
+    switch(in->type) {
+    case NUMBER:
+        return (uint32_t)in->num_value;
+    case BOOL:
+        return (uint32_t)in->bool_value;
+    case CHAR:
+        return (uint32_t)in->char_value;
+    case STRING:
+        return hash_str(in->string_value);
+    case NIL:
+        return 42; // Because why not?
+    case PAIR:
+        return hash_obj(car(in)) + hash_obj(cdr(in));
+    case SYMBOL:
+        return hash_str(in->symbol_value);
+    case MAP:
+        map_iter i = map_start();
+        cell* cur;
+        uint32_t hash = 0;
+
+        while((cur = map_next(in->map_value, i))) {
+            hash += hash_obj(cur->key) + hash_obj(cur->val);
+        }
+    }
+}
+
+map* new_map() {
+    map* m = malloc(sizeof(map));
     if(!m)
         die("Out of memory.");
 
@@ -118,7 +157,7 @@ symmap* new_map() {
     return m;
 }
 
-void map_put(symmap* m, char* key, obj* val) {
+void map_put(map* m, void* key, obj* val) {
     // First, check if we're too full.
     if((double)m->size > (MAX_FILL * m->capacity))
         grow_map(m);
@@ -126,7 +165,7 @@ void map_put(symmap* m, char* key, obj* val) {
     map_put_nogrow(m, key, val);
 }
 
-obj* map_get(symmap* m, char* key) {
+obj* map_get(map* m, void* key) {
     int idx = find_idx_key(m, key);
 
     // Did we find it?
@@ -137,7 +176,7 @@ obj* map_get(symmap* m, char* key) {
     return m->map[idx].val;
 }
 
-void map_del(symmap* m, char* key) {
+void map_del(map* m, void* key) {
     int idx = find_idx_key(m, key);
 
     // Should we free key/val??
@@ -154,7 +193,7 @@ map_iter map_start() {
     return it;
 }
 
-cell* map_next(symmap* m, map_iter it) {
+cell* map_next(map* m, map_iter it) {
     while(*it < m->capacity) {
         if(m->map[*it].key)
             return &m->map[(*it)++];
@@ -165,15 +204,15 @@ cell* map_next(symmap* m, map_iter it) {
     return NULL;
 }
 
-int map_contains(symmap* m, char* key) {
+int map_contains(map* m, void* key) {
     map_iter i = map_start();
     cell* cur;
     while((cur = map_next(m, i))) {
         // Check if we've found a matching key.
-        if(strcmp(cur->key, key) == 0)
-            return 1;
+        if(cmpkey(m, cur->key, key))
+            return true;
     }
 
     // If we find nothing, return false.
-    return 0;
+    return false;
 }

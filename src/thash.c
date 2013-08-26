@@ -17,7 +17,7 @@ void check_map(symmap* m, char* key) {
 
 int main(int argc, char const *argv[]) {
     
-    symmap* m = new_map();
+    symmap* m = new_map(SYM);
 
     map_put(m, "hello", new_number(2.0));
     map_put(m, "world", new_number(3.0));

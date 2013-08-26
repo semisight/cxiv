@@ -6,6 +6,9 @@
 
 // globals
 
+#define true 1
+#define false 0
+
 obj* val_false;
 obj* val_true;
 obj* val_nil;

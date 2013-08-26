@@ -10,33 +10,45 @@
 #include "obj.h"
 #include "util.h"
 
+struct obj_t;
+
+typedef enum {
+    SYM,
+    OBJ
+} map_type;
+
 typedef struct {
-    char* key;
-    obj* val;
+    void* key;
+    obj_t* val;
 } cell;
 
 typedef struct {
+    map_type type;
     cell* map;
     unsigned int size;
     unsigned int capacity;
-} symmap;
+} map;
 
+typedef map symmap;
+typedef map objmap;
 typedef unsigned int* map_iter;
 
 uint32_t hash_str(char*);
 
-symmap* new_map();
+uint32_t hash_obj(obj_t*);
 
-void map_put(symmap*, char*, obj*);
+map* new_map(map_type);
 
-obj* map_get(symmap*, char*);
+void map_put(map*, void*, obj_t*);
 
-void map_del(symmap*, char*);
+obj_t* map_get(map*, void*);
+
+void map_del(map*, void*);
 
 map_iter map_start();
 
-cell* map_next(symmap*, map_iter);
+cell* map_next(map*, map_iter);
 
-int map_contains(symmap*, char*);
+int map_contains(map*, void*);
 
 #endif

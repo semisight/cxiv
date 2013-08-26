@@ -6,9 +6,9 @@
 int is_in(int c, const char* list) {
     for(size_t i=0; i<strlen(list); i++)
         if((char)c == list[i])
-            return 1;
+            return true;
 
-    return 0;
+    return false;
 }
 
 int is_delim(int c) {
@@ -82,9 +82,9 @@ double read_num(char c, FILE* in) {
 
 int read_bool(char c, FILE* in) {
     if((c = getc(in)) == 't')
-        return 1;
+        return true;
     else
-        return 0;
+        return false;
 }
 
 char read_char(char c, FILE* in) {
@@ -248,6 +248,6 @@ obj* read(FILE* in) {
         exit(1);
     } else {
         die("Unidentifiable input.");
-        return 0; // to make clang happy.
+        return NULL; // to make clang happy.
     }
 }

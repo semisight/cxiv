@@ -6,10 +6,10 @@ void make_globals() {
     val_true = new_obj(BOOL);
     val_nil = new_obj(NIL);
 
-    val_false->bool_value = 0;
-    val_true->bool_value = 1;
+    val_false->bool_value = false;
+    val_true->bool_value = true;
 
-    sym_cache = new_map();
+    sym_cache = new_map(SYM);
 
     sym_quote = new_symbol("quote");
 }
@@ -89,5 +89,42 @@ obj* cdr(obj* in) {
         return val_nil;
 
     die("Cannot get cdr of non-pair.");
-    return 0; // For clang.
+    return false; // For clang.
+}
+
+int is_equal(obj* a, obj* b) {
+    // Quick check for types.
+    if(a->type != b->type)
+        return false;
+
+    switch(a->type) {
+    case NUMBER:
+        return a->num_value == b->num_value;
+    case BOOL:
+        return a == b;
+    case CHAR:
+        return a->char_value == b->char_value;
+    case STRING:
+        return strcmp(a->string_value, b->string_value) == 0;
+    case NIL:
+        return true; // Must both be nil
+    case PAIR:
+        return is_equal(car(a), car(b)) && is_equal(cdr(a), cdr(b));
+    case SYMBOL:
+        return a == b;
+    case MAP:
+        if(a->size != b->size) // If sizes are equal...
+            return false;
+
+        // We have to check to see if everything in a is also in b
+        map_iter i = map_start();
+        cell* cur;
+
+        while((cur = map_next(a, i))) {
+            if(map_get(b, cur->key) != cur->val)
+                return false;
+        }
+
+        return true;
+    }
 }
