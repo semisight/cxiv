@@ -1,3 +1,4 @@
+#include "cxiv.h"
 #include "print.h"
 #include "hash.h"
 
@@ -21,16 +22,24 @@ void print_list(obj* in) {
 void print_map(obj* in) {
     map_iter i = map_start();
     cell* cur;
+    cell* next = map_next(in->map_value, i);
 
-    printf("{");
+    if(!next)
+        return;
 
-    while((cur = map_next(in->map_value, i))) {
+    while(true) {
+        cur = next;
+        next = map_next(in->map_value, i);
+
         print(cur->key);
         printf(": ");
         print(cur->val);
-    }
 
-    printf("}");
+        if(next)
+            printf(" ");
+        else
+            break;
+    }
 }
 
 void print(obj* in) {
@@ -68,7 +77,9 @@ void print(obj* in) {
         printf(")");
         break;
     case MAP:
+        printf("{");
         print_map(in);
+        printf("}");
         break;
     }
 }

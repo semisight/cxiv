@@ -45,6 +45,8 @@ char* read_symbol(char, FILE*);
 
 obj* read_pair(FILE*);
 
+obj* read_map(FILE*);
+
 obj* read(FILE*);
 
 #endif

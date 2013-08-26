@@ -18,6 +18,18 @@ obj* eval_list(obj* in) {
     }
 }
 
+obj* eval_map(obj* in) {
+    map_iter i = map_start();
+    cell* cur;
+
+    while((cur = map_next(in->map_value, i))) {
+        cur->key = eval(cur->key);
+        cur->val = eval(cur->val);
+    }
+
+    return in;
+}
+
 obj* eval(obj* in) {
     // See what kind of object we have, then evaluate if necessary.
     switch(in->type) {
@@ -28,8 +40,10 @@ obj* eval(obj* in) {
         return in;
     case PAIR:
         return eval_list(in);
-        break;
-    default: // NIL and SYMBOL
+    case MAP:
+        return eval_map(in);
+    case NIL:
+    case SYMBOL:
         die("Cannot evaluate symbols or nil directly. Remember to quote.");
         return NULL; // For clang.
     }

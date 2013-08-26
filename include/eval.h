@@ -15,8 +15,10 @@ int is_quoted(obj*);
 
 // Eval routines
 
-obj* eval_list(obj* in);
+obj* eval_list(obj*);
 
-obj* eval(obj* in);
+obj* eval_map(obj*);
+
+obj* eval(obj*);
 
 #endif

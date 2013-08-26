@@ -53,6 +53,8 @@ obj* new_char(char input);
 
 obj* new_string(char* input);
 
+obj* new_omap();
+
 obj* cons(obj*, obj*);
 
 obj* car(obj*);

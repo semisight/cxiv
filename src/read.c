@@ -12,7 +12,7 @@ int is_in(int c, const char* list) {
 }
 
 int is_delim(int c) {
-    return isspace(c) || c == EOF || c == ';' || c == ')';
+    return isspace(c) || c == EOF || c == ';' || c == ')' || c == '}';
 }
 
 int is_initial(int c) {
@@ -216,6 +216,28 @@ obj* read_pair(FILE* in) {
     }
 }
 
+obj* read_map(FILE* in) {
+
+    obj* map = new_omap();
+
+    consume_whitespace(in);
+
+    while(peek(in) != '}') {
+        obj* key = read(in);
+        obj* val = read(in);
+
+        map_put(map->map_value, key, val);
+
+        // Need this if there's whitespace in between the last element and the
+        // closing brace.
+        consume_whitespace(in);
+    }
+
+    getc(in); // Get the '}' character.
+
+    return map;
+}
+
 obj* read(FILE* in) {
     int c;
 
@@ -244,7 +266,7 @@ obj* read(FILE* in) {
     } else if(c == '\'') {                                      // quoted sexp
         return cons(sym_quote, cons(read(in), val_nil));
     } else if(c == '{') {
-        //return read_map();
+        return read_map(in);
     } else if(c == EOF) {
         printf("Thanks!\n");
         exit(1);

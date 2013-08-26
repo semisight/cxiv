@@ -83,7 +83,11 @@ int find_idx_empty(map* m, void* key) {
 }
 
 void map_put_nogrow(map* m, void* key, obj* val) {
-    int idx = find_idx_empty(m, key);
+    int idx = find_idx_key(m, key); // See if it exists first.
+    
+    // Otherwise create it.
+    if(idx == -1)
+        idx = find_idx_empty(m, key);
 
     cell* c = &m->map[idx];
 
@@ -115,14 +119,15 @@ uint32_t hash_str(char* str) {
 }
 
 uint32_t hash_map(map* in) {
-        map_iter i = map_start();
-        cell* cur;
-        uint32_t hash = 0;
+    map_iter i = map_start();
+    cell* cur;
+    uint32_t hash = 0;
 
-        while((cur = map_next(in, i))) {
-            hash += hash_obj(cur->key) + hash_obj(cur->val);
-        }
-        return hash;
+    while((cur = map_next(in, i))) {
+        hash += hash_obj(cur->key) + hash_obj(cur->val);
+    }
+
+    return hash;
 }
 
 uint32_t hash_obj(obj* in) {
@@ -146,7 +151,7 @@ uint32_t hash_obj(obj* in) {
     }
 }
 
-map* new_map() {
+map* new_map(map_type t) {
     map* m = malloc(sizeof(map));
     if(!m)
         die("Out of memory.");
@@ -157,6 +162,7 @@ map* new_map() {
 
     m->size = 0;
     m->capacity = INITIAL_SIZE;
+    m->type = t;
 
     // Set vals to NULL for each one. (vals should never be null).
     clear(m->map, m->capacity);

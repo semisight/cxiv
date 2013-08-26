@@ -66,6 +66,13 @@ obj* new_symbol(char* input) {
     return o;
 }
 
+obj* new_omap() {
+    obj* o = new_obj(MAP);
+    o->map_value = new_map(OBJ);
+
+    return o;
+}
+
 obj* cons(obj* first, obj* second) {
     obj* o = new_obj(PAIR);
 
