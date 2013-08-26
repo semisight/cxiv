@@ -16,5 +16,7 @@ obj* val_nil;
 symmap* sym_cache;
 
 obj* sym_quote;
+obj* sym_define;
+obj* sym_set;
 
 #endif

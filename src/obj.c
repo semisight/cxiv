@@ -1,19 +1,6 @@
 #include "cxiv.h"
 #include "obj.h"
 
-void make_globals() {
-    val_false = new_obj(BOOL);
-    val_true = new_obj(BOOL);
-    val_nil = new_obj(NIL);
-
-    val_false->bool_value = false;
-    val_true->bool_value = true;
-
-    sym_cache = new_map(SYM);
-
-    sym_quote = new_symbol("quote");
-}
-
 obj* new_obj(obj_type type) {
     obj* o = malloc(sizeof(obj));
     o->type = type;

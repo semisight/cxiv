@@ -41,8 +41,6 @@ typedef struct obj_t {
     };
 } obj;
 
-void make_globals();
-
 obj* new_obj(obj_type type);
 
 obj* new_number(double input);
