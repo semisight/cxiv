@@ -9,16 +9,18 @@
  * Handles the evaluation of the object tree after it is parsed.
  */
 
-// Predicates
+obj* get_verb(obj*);
 
-int is_quoted(obj*);
+obj* define_var(obj*, env*);
 
-// Eval routines
+obj* set_var(obj*, env*);
 
-obj* eval_list(obj*);
+obj* eval_list(obj*, env*);
 
-obj* eval_map(obj*);
+obj* eval_map(obj*, env*);
 
-obj* eval(obj*);
+obj* eval_symbol(obj*, env*);
+
+obj* eval(obj*, env*);
 
 #endif

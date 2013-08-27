@@ -3,6 +3,7 @@
 
 #include "obj.h"
 #include "hash.h"
+#include "env.h"
 
 // globals
 
@@ -18,5 +19,7 @@ symmap* sym_cache;
 obj* sym_quote;
 obj* sym_define;
 obj* sym_set;
+
+env* global_env;
 
 #endif

@@ -86,6 +86,17 @@ obj* cdr(obj* in) {
     return false; // For clang.
 }
 
+int list_len(obj* list) {
+    if(list->type != PAIR)
+        die("Cannot get length of non-list.");
+
+    int i = 1;
+    while((list = cdr(list)) != val_nil)
+        i++;
+
+    return i;
+}
+
 int is_equal(obj* a, obj* b) {
     // Quick check for types.
     if(a->type != b->type)

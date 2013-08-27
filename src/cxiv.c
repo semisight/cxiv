@@ -24,6 +24,8 @@ void make_globals() {
     sym_quote = new_symbol("quote");
     sym_define = new_symbol("define");
     sym_set = new_symbol("set!");
+
+    global_env = new_env();
 }
 
 int main(int argc, char const *argv[]) {
@@ -36,7 +38,7 @@ int main(int argc, char const *argv[]) {
     while(1) {
         printf("? ");
         intermed = read(stdin);
-        intermed = eval(intermed);
+        intermed = eval(intermed, global_env);
         print(intermed);
         printf("\n\n");
     }
