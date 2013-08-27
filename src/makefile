@@ -2,7 +2,7 @@ IDIR=../include
 ODIR=obj
 
 CC=clang
-CFLAGS=-I$(IDIR) -g -Wall
+CFLAGS=-I$(IDIR) -g -Wall -O3
 
 _DEPS = util.h obj.h read.h eval.h print.h hash.h cxiv.h env.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))

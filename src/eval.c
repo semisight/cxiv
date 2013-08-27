@@ -38,19 +38,18 @@ obj* set_var(obj* in, env* e) {
 
 // Eval routines
 
-obj* eval_list(obj* in, env* e) {
-    obj* verb = get_verb(in);
+obj* eval_if(obj* in, env* e) {
+    if(in == val_nil || list_len(in) != 3)
+        die("if takes 3 arguments.");
 
-    if(verb == sym_quote) {
-        return cadr(in);
-    } else if(verb == sym_define) {
-        return define_var(cdr(in), e);
-    } else if(verb == sym_set) {
-        return set_var(cdr(in), e);
-    } else {
-        die("Cannot eval non-quoted lists yet.");
-        return NULL; // For clang.
-    }
+    obj* pred = eval(car(in), e);
+    obj* cnsq = cadr(in);
+    obj* alt = caddr(in);
+
+    if(pred != val_nil && pred != val_false)
+        return cnsq;
+    else
+        return alt;
 }
 
 obj* eval_map(obj* in, env* e) {
@@ -67,6 +66,23 @@ obj* eval_map(obj* in, env* e) {
 
 obj* eval_symbol(obj* in, env* e) {
     return env_get(e, in->symbol_value);
+}
+
+obj* eval_list(obj* in, env* e) {
+    obj* verb = get_verb(in);
+
+    if(verb == sym_quote) {
+        return cadr(in);
+    } else if(verb == sym_define) {
+        return define_var(cdr(in), e);
+    } else if(verb == sym_set) {
+        return set_var(cdr(in), e);
+    } else if(verb == sym_if) {
+        return eval(eval_if(cdr(in), e), e);
+    } else {
+        die("Cannot eval non-quoted lists yet.");
+        return NULL; // For clang.
+    }
 }
 
 obj* eval(obj* in, env* e) {

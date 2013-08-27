@@ -24,6 +24,7 @@ void make_globals() {
     sym_quote = new_symbol("quote");
     sym_define = new_symbol("define");
     sym_set = new_symbol("set!");
+    sym_if = new_symbol("if");
 
     global_env = new_env();
 }

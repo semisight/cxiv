@@ -19,6 +19,7 @@ symmap* sym_cache;
 obj* sym_quote;
 obj* sym_define;
 obj* sym_set;
+obj* sym_if;
 
 env* global_env;
 

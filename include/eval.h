@@ -15,11 +15,13 @@ obj* define_var(obj*, env*);
 
 obj* set_var(obj*, env*);
 
-obj* eval_list(obj*, env*);
+obj* eval_if(obj*, env*);
 
 obj* eval_map(obj*, env*);
 
 obj* eval_symbol(obj*, env*);
+
+obj* eval_list(obj*, env*);
 
 obj* eval(obj*, env*);
 
