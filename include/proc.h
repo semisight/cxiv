@@ -3,12 +3,36 @@
 
 #include "obj.h"
 
-obj* add_proc(obj*);
+#define PUT_PROC(n, p, e) _define_var(n, new_proc(n, p), e)
 
-obj* sub_proc(obj*);
+// General predicates
 
-obj* mul_proc(obj*);
+obj* proc_is_number(obj*);
 
-obj* div_proc(obj*);
+obj* proc_is_bool(obj*);
+
+obj* proc_is_char(obj*);
+
+obj* proc_is_string(obj*);
+
+obj* proc_is_nil(obj*);
+
+obj* proc_is_pair(obj*);
+
+obj* proc_is_symbol(obj*);
+
+obj* proc_is_map(obj*);
+
+obj* proc_is_proc(obj*);
+
+// Integer ops
+
+obj* proc_add(obj*);
+
+obj* proc_sub(obj*);
+
+obj* proc_mul(obj*);
+
+obj* proc_div(obj*);
 
 #endif

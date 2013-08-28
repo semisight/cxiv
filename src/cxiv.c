@@ -29,10 +29,20 @@ void make_globals() {
 
     global_env = new_env();
 
-    _define_var("+", new_proc("+", add_proc), global_env);
-    _define_var("-", new_proc("-", sub_proc), global_env);
-    _define_var("*", new_proc("*", mul_proc), global_env);
-    _define_var("/", new_proc("/", div_proc), global_env);
+    PUT_PROC("+", proc_add, global_env);
+    PUT_PROC("-", proc_sub, global_env);
+    PUT_PROC("*", proc_mul, global_env);
+    PUT_PROC("/", proc_div, global_env);
+
+    PUT_PROC("number?", proc_is_number, global_env);
+    PUT_PROC("bool?", proc_is_bool, global_env);
+    PUT_PROC("char?", proc_is_char, global_env);
+    PUT_PROC("string?", proc_is_string, global_env);
+    PUT_PROC("nil?", proc_is_nil, global_env);
+    PUT_PROC("pair?", proc_is_pair, global_env);
+    PUT_PROC("symbol?", proc_is_symbol, global_env);
+    PUT_PROC("map?", proc_is_map, global_env);
+    PUT_PROC("procedure?", proc_is_proc, global_env);
 }
 
 int main(int argc, char const *argv[]) {

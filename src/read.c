@@ -83,7 +83,9 @@ double read_num(char c, FILE* in) {
     }
 
     num *= sign;
-    num /= pow(10, digits_after_dec);
+
+    if(digits_after_dec != -1)
+        num /= pow(10, digits_after_dec);
 
     if(!is_delim(c))
         die("Number has non-numeric component.");
