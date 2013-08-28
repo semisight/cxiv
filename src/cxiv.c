@@ -8,6 +8,7 @@
 #include "read.h"
 #include "eval.h"
 #include "print.h"
+#include "proc.h"
 
 // Basic functions
 
@@ -27,6 +28,11 @@ void make_globals() {
     sym_if = new_symbol("if");
 
     global_env = new_env();
+
+    _define_var("+", new_proc("+", add_proc), global_env);
+    _define_var("-", new_proc("-", sub_proc), global_env);
+    _define_var("*", new_proc("*", mul_proc), global_env);
+    _define_var("/", new_proc("/", div_proc), global_env);
 }
 
 int main(int argc, char const *argv[]) {

@@ -148,6 +148,8 @@ uint32_t hash_obj(obj* in) {
         return hash_str(in->symbol_value);
     case MAP:
         return hash_map(in->map_value);
+    case PROC_NATIVE:
+        return (uint32_t)in->proc_native.call; // Use function address.
     }
 }
 

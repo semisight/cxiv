@@ -151,7 +151,7 @@ char* read_symbol(char c, FILE* in) {
         if(!isspace(peek(in)) && !is_delim(peek(in)))
             die("+ or - are single letter symbols.");
         
-        return (c == '+') ? "+" : "-";
+        return (c == '+') ? fulcpy("+") : fulcpy("-");
     }
 
     ungetc(c, in);

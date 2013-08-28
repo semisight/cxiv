@@ -4,10 +4,10 @@ ODIR=obj
 CC=clang
 CFLAGS=-I$(IDIR) -g -Wall -O3
 
-_DEPS = util.h obj.h read.h eval.h print.h hash.h cxiv.h env.h
+_DEPS = util.h obj.h read.h eval.h print.h hash.h cxiv.h env.h proc.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = util.o obj.o read.o eval.o print.o cxiv.o hash.o env.o
+_OBJ = util.o obj.o read.o eval.o print.o cxiv.o hash.o env.o proc.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 _H_OBJ = util.o obj.o hash.o thash.o

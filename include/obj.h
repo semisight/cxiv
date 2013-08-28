@@ -20,8 +20,11 @@ typedef enum {
     NIL,
     PAIR,
     SYMBOL,
-    MAP
+    MAP,
+    PROC_NATIVE
 } obj_type;
+
+typedef struct obj_t* (*proc)(struct obj_t*);
 
 struct map_t;
 
@@ -38,6 +41,10 @@ typedef struct obj_t {
             struct obj_t* car;
             struct obj_t* cdr;
         } pair;
+        struct {
+            char* name;
+            proc call;
+        } proc_native;
     };
 } obj;
 
@@ -52,6 +59,8 @@ obj* new_char(char input);
 obj* new_string(char* input);
 
 obj* new_omap();
+
+obj* new_proc(char*, proc);
 
 obj* cons(obj*, obj*);
 

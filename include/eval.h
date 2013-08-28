@@ -11,6 +11,10 @@
 
 obj* get_verb(obj*);
 
+void _define_var(char*, obj*, env*);
+
+void _set_var(char*, obj*, env*);
+
 obj* define_var(obj*, env*);
 
 obj* set_var(obj*, env*);
@@ -20,6 +24,8 @@ obj* eval_if(obj*, env*);
 obj* eval_map(obj*, env*);
 
 obj* eval_symbol(obj*, env*);
+
+obj* eval_arguments(obj*, env*);
 
 obj* eval_list(obj*, env*);
 

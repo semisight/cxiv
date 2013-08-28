@@ -60,6 +60,14 @@ obj* new_omap() {
     return o;
 }
 
+obj* new_proc(char* name, proc input) {
+    obj* o = new_obj(PROC_NATIVE);
+    o->proc_native.name = fulcpy(name);
+    o->proc_native.call = input;
+
+    return o;
+}
+
 obj* cons(obj* first, obj* second) {
     obj* o = new_obj(PAIR);
 
@@ -106,6 +114,8 @@ int is_equal(obj* a, obj* b) {
     case NUMBER:
         return a->num_value == b->num_value;
     case BOOL:
+    case SYMBOL:
+    case PROC_NATIVE:
         return a == b;
     case CHAR:
         return a->char_value == b->char_value;
@@ -115,8 +125,6 @@ int is_equal(obj* a, obj* b) {
         return true; // Must both be nil
     case PAIR:
         return is_equal(car(a), car(b)) && is_equal(cdr(a), cdr(b));
-    case SYMBOL:
-        return a == b;
     case MAP:
         if(a->map_value->size != b->map_value->size) // If sizes are equal...
             return false;

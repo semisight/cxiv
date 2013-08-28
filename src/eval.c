@@ -8,6 +8,14 @@ obj* get_verb(obj* in) {
     return car(in);
 }
 
+void _define_var(char* var, obj* val, env* e) {
+    env_define(e, var, val);
+}
+
+void _set_var(char* var, obj* val, env* e) {
+    env_set(e, var, val);
+}
+
 obj* define_var(obj* in, env* e) {
     if(in == val_nil || list_len(in) != 2)
         die("Define not given 2 arguments.");
@@ -18,7 +26,7 @@ obj* define_var(obj* in, env* e) {
     if(var->type != SYMBOL)
         die("Only symbols can be defined.");
 
-    env_define(e, var->symbol_value, val);
+    _define_var(var->symbol_value, val, e);
     return var;
 }
 
@@ -32,7 +40,7 @@ obj* set_var(obj* in, env* e) {
     if(var->type != SYMBOL)
         die("Only symbols can be defined.");
 
-    env_set(e, var->symbol_value, val);
+    _set_var(var->symbol_value, val, e);
     return val;
 }
 
@@ -68,20 +76,30 @@ obj* eval_symbol(obj* in, env* e) {
     return env_get(e, in->symbol_value);
 }
 
+obj* eval_arguments(obj* in, env* e) {
+    if(in == val_nil)
+        return val_nil;
+
+    return cons(eval(car(in), e), eval_arguments(cdr(in), e));
+}
+
 obj* eval_list(obj* in, env* e) {
     obj* verb = get_verb(in);
+    obj* rest = cdr(in);
 
     if(verb == sym_quote) {
         return cadr(in);
     } else if(verb == sym_define) {
-        return define_var(cdr(in), e);
+        return define_var(rest, e);
     } else if(verb == sym_set) {
-        return set_var(cdr(in), e);
+        return set_var(rest, e);
     } else if(verb == sym_if) {
-        return eval(eval_if(cdr(in), e), e);
+        return eval(eval_if(rest, e), e);
     } else {
-        die("Cannot eval non-quoted lists yet.");
-        return NULL; // For clang.
+        obj* p = eval(verb, e);
+        obj* args = eval_arguments(rest, e);
+
+        return p->proc_native.call(args);
     }
 }
 
@@ -99,8 +117,9 @@ obj* eval(obj* in, env* e) {
         return eval_map(in, e);
     case SYMBOL:
         return eval_symbol(in, e);
+    case PROC_NATIVE:
     case NIL:
-        die("Cannot evaluate symbols or nil directly. Remember to quote.");
+        die("Cannot evaluate procs or nil directly. Remember to quote/apply.");
         return NULL; // For clang.
     }
 }
