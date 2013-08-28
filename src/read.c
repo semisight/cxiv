@@ -59,7 +59,7 @@ int peek(FILE* in) {
 
 double read_num(char c, FILE* in) {
     double num = 0;
-    int sign = 1;
+    int sign = 1, digits_after_dec = -1;
 
     if(is_in(c, "+-")) {
         if(c == '-')
@@ -68,10 +68,22 @@ double read_num(char c, FILE* in) {
         ungetc(c, in);
     }
 
-    while(isdigit(c = getc(in)))
-        num = 10*num + (c - '0');
+    while(isdigit(c = getc(in)) || c == '.') {
+        if(isdigit(c)) {
+            num = 10*num + (c - '0');
+
+            if(digits_after_dec != -1)
+                digits_after_dec++;
+        } else if(c == '.') {
+            if(digits_after_dec != -1)
+                die("Cannot have 2 decimal points in a number.");
+
+            digits_after_dec = 0;
+        }
+    }
 
     num *= sign;
+    num /= pow(10, digits_after_dec);
 
     if(!is_delim(c))
         die("Number has non-numeric component.");

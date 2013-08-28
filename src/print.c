@@ -45,7 +45,7 @@ void print_map(obj* in) {
 void print(obj* in) {
     switch(in->type) {
     case NUMBER:
-        printf("%f", in->num_value);
+        printf("%g", in->num_value);
         break;
     case BOOL:
         printf("%s", in->bool_value ? "true" : "false");
