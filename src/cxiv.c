@@ -45,6 +45,20 @@ void make_globals() {
     PUT_PROC("symbol?", proc_is_symbol, global_env);
     PUT_PROC("map?", proc_is_map, global_env);
     PUT_PROC("procedure?", proc_is_proc, global_env);
+
+    PUT_PROC("number->char", proc_num_to_char, global_env);
+    PUT_PROC("char->number", proc_char_to_num, global_env);
+    PUT_PROC("number->string", proc_num_to_string, global_env);
+    PUT_PROC("string->number", proc_string_to_num, global_env);
+    PUT_PROC("symbol->string", proc_symbol_to_string, global_env);
+    PUT_PROC("string->symbol", proc_string_to_symbol, global_env);
+
+    PUT_PROC("cons", proc_cons, global_env);
+    PUT_PROC("car", proc_car, global_env);
+    PUT_PROC("cdr", proc_cdr, global_env);
+    PUT_PROC("set-car!", proc_set_car, global_env);
+    PUT_PROC("set-cdr!", proc_set_cdr, global_env);
+    PUT_PROC("list", proc_list, global_env);
 }
 
 int main(int argc, char const *argv[]) {

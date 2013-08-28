@@ -25,6 +25,20 @@ obj* proc_is_map(obj*);
 
 obj* proc_is_proc(obj*);
 
+// Type conversions
+
+obj* proc_num_to_char(obj*);
+
+obj* proc_char_to_num(obj*);
+
+obj* proc_num_to_string(obj*);
+
+obj* proc_string_to_num(obj*);
+
+obj* proc_symbol_to_string(obj*);
+
+obj* proc_string_to_symbol(obj*);
+
 // Integer ops
 
 obj* proc_add(obj*);
@@ -34,5 +48,19 @@ obj* proc_sub(obj*);
 obj* proc_mul(obj*);
 
 obj* proc_div(obj*);
+
+// List ops
+
+obj* proc_cons(obj*);
+
+obj* proc_car(obj*);
+
+obj* proc_cdr(obj*);
+
+obj* proc_set_car(obj*);
+
+obj* proc_set_cdr(obj*);
+
+obj* proc_list(obj*);
 
 #endif

@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
-void die(char* msg);
+void die(char*);
 
-char* fulcpy(char* in);
+char* fulcpy(char*);
 
 #endif
