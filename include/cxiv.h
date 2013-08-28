@@ -20,6 +20,8 @@ obj* sym_quote;
 obj* sym_define;
 obj* sym_set;
 obj* sym_if;
+obj* sym_and;
+obj* sym_or;
 
 env* global_env;
 

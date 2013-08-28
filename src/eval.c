@@ -60,6 +60,40 @@ obj* eval_if(obj* in, env* e) {
         return alt;
 }
 
+obj* eval_and(obj* in, env* e) {
+    obj* arg;
+
+    if(in == val_nil)
+        return val_true;
+
+    while(in != val_nil) {
+        arg = eval(car(in), e);
+        if(arg == val_false || arg == val_nil)
+            return arg;
+
+        in = cdr(in);
+    }
+
+    return arg;
+}
+
+obj* eval_or(obj* in, env* e) {
+    obj* arg;
+
+    if(in == val_nil)
+        return val_false;
+
+    while(in != val_nil) {
+        arg = eval(car(in), e);
+        if(arg != val_false && arg != val_nil)
+            return arg;
+
+        in = cdr(in);
+    }
+
+    return arg;
+}
+
 obj* eval_map(obj* in, env* e) {
     map_iter i = map_start();
     cell* cur;
@@ -95,6 +129,10 @@ obj* eval_list(obj* in, env* e) {
         return set_var(rest, e);
     } else if(verb == sym_if) {
         return eval(eval_if(rest, e), e);
+    } else if(verb == sym_and) {
+        return eval_and(rest, e);
+    } else if(verb == sym_or) {
+        return eval_or(rest, e);
     } else {
         obj* p = eval(verb, e);
         obj* args = eval_arguments(rest, e);
