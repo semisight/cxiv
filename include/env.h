@@ -8,7 +8,7 @@ typedef obj env;    // env is a list of scopes.
 
 env* new_env();
 
-env* env_extend(env*);
+env* env_extend(obj*, obj*, env*);
 
 void env_define(env*, char*, obj*);
 

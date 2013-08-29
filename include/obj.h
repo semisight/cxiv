@@ -21,7 +21,8 @@ typedef enum {
     PAIR,
     SYMBOL,
     MAP,
-    PROC_NATIVE
+    PROC_NATIVE,
+    PROC_COMPOUND
 } obj_type;
 
 typedef struct obj_t* (*proc)(struct obj_t*);
@@ -45,6 +46,12 @@ typedef struct obj_t {
             char* name;
             proc call;
         } proc_native;
+        struct {
+            char* name;
+            obj* arg_list;
+            obj* body;
+            env* env;
+        } proc_compound;
     };
 } obj;
 

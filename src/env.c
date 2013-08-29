@@ -27,14 +27,28 @@ map* env_find(env* in, char* key) {
 // Public functions
 
 env* new_env() {
-    return env_extend(val_nil);
+    return env_extend(val_nil, val_nil, val_nil);
 }
 
-env* env_extend(env* in) {
+env* env_extend(obj* vars, obj* vals, env* in) {
+    obj* m;
+
+    if(list_len(vars) != list_len(vals))
+        die("Cannot extend environment with unequal number of vars and vals.");
 
     // Create a new map, but change it to SYM type.
-    obj* m = new_omap();
+    m = new_omap();
     m->map_value->type = SYM;
+
+    while(vars != val_nil) {
+        if(car(vars)->type != SYMBOL)
+            die("Cannot map value to non-symbol.");
+
+        map_put(m->map_value, car(vars)->symbol_value, car(vals));
+
+        vars = cdr(vars);
+        vals = cdr(vals);
+    }
 
     return cons(m, in);
 }
