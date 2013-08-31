@@ -40,6 +40,10 @@ obj* proc_is_proc(obj* in) {
     return car(in)->type == PROC_NATIVE ? val_true : val_false;
 }
 
+obj* proc_poly_eq(obj* in) {
+    return is_equal(car(in), cadr(in)) ? val_true : val_false;
+}
+
 // Type conversions
 
 obj* proc_num_to_char(obj* in) {
@@ -167,6 +171,27 @@ obj* proc_div(obj* args) {
     }
 
     return new_number(rv);
+}
+
+obj* proc_lt(obj* args) {
+    if(args == val_nil || list_len(args) != 2)
+        die("< takes 2 arguments.");
+
+    return car(args)->num_value < cadr(args)->num_value ? val_true : val_false;
+}
+
+obj* proc_gt(obj* args) {
+    if(args == val_nil || list_len(args) != 2)
+        die("> takes 2 arguments.");
+
+    return car(args)->num_value > cadr(args)->num_value ? val_true : val_false;
+}
+
+obj* proc_eq(obj* args) {
+    if(args == val_nil || list_len(args) != 2)
+        die("= takes 2 arguments.");
+
+    return car(args)->num_value == cadr(args)->num_value ? val_true : val_false;
 }
 
 // List ops

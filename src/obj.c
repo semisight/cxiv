@@ -68,6 +68,21 @@ obj* new_proc(char* name, proc input) {
     return o;
 }
 
+obj* new_compound_proc(char* name, obj* args, obj* body, env* e) {
+    obj* o = new_obj(PROC_COMPOUND);
+
+    if(name)
+        o->proc_compound.name = name;
+    else
+        o->proc_compound.name = "lambda";
+
+    o->proc_compound.arg_list = args;
+    o->proc_compound.body = body;
+    o->proc_compound.env = e;
+
+    return o;
+}
+
 obj* cons(obj* first, obj* second) {
     obj* o = new_obj(PAIR);
 
@@ -95,8 +110,11 @@ obj* cdr(obj* in) {
 }
 
 int list_len(obj* list) {
-    if(list->type != PAIR)
+    if(list->type != PAIR && list->type != NIL)
         die("Cannot get length of non-list.");
+
+    if(list == val_nil)
+        return 0;
 
     int i = 1;
     while((list = cdr(list)) != val_nil)
@@ -116,6 +134,7 @@ int is_equal(obj* a, obj* b) {
     case BOOL:
     case SYMBOL:
     case PROC_NATIVE:
+    case PROC_COMPOUND:
         return a == b;
     case CHAR:
         return a->char_value == b->char_value;

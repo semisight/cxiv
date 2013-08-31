@@ -25,6 +25,8 @@ obj* proc_is_map(obj*);
 
 obj* proc_is_proc(obj*);
 
+obj* proc_poly_eq(obj*);
+
 // Type conversions
 
 obj* proc_num_to_char(obj*);
@@ -48,6 +50,12 @@ obj* proc_sub(obj*);
 obj* proc_mul(obj*);
 
 obj* proc_div(obj*);
+
+obj* proc_lt(obj*);
+
+obj* proc_gt(obj*);
+
+obj* proc_eq(obj*);
 
 // List ops
 

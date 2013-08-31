@@ -84,5 +84,7 @@ void print(obj* in) {
     case PROC_NATIVE:
         printf("#<native proc %s>", in->proc_native.name);
         break;
+    case PROC_COMPOUND:
+        printf("#<procedure %s>", in->proc_compound.name);
     }
 }

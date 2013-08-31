@@ -27,6 +27,8 @@ typedef enum {
 
 typedef struct obj_t* (*proc)(struct obj_t*);
 
+typedef struct obj_t env;    // env is a list of scopes.
+
 struct map_t;
 
 typedef struct obj_t {
@@ -48,8 +50,8 @@ typedef struct obj_t {
         } proc_native;
         struct {
             char* name;
-            obj* arg_list;
-            obj* body;
+            struct obj_t* arg_list;
+            struct obj_t* body;
             env* env;
         } proc_compound;
     };
@@ -68,6 +70,8 @@ obj* new_string(char* input);
 obj* new_omap();
 
 obj* new_proc(char*, proc);
+
+obj* new_compound_proc(char*, obj*, obj*, env*);
 
 obj* cons(obj*, obj*);
 

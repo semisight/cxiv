@@ -17,14 +17,21 @@ void _set_var(char* var, obj* val, env* e) {
 }
 
 obj* define_var(obj* in, env* e) {
-    if(in == val_nil || list_len(in) != 2)
-        die("Define not given 2 arguments.");
+    obj* var = NULL;
+    obj* val = NULL;
+    obj* args;
+    obj* body;
 
-    obj* var = car(in);
-    obj* val = eval(cadr(in), e);
+    if(car(in)->type == SYMBOL) {
+        var = car(in);
+        val = eval(cadr(in), e);
+    } else if(car(in)->type == PAIR) {
+        var = caar(in);
+        args = cdar(in);
+        body = cdr(in);
 
-    if(var->type != SYMBOL)
-        die("Only symbols can be defined.");
+        val = new_compound_proc(var->symbol_value, args, body, e);
+    }
 
     _define_var(var->symbol_value, val, e);
     return var;
@@ -133,11 +140,30 @@ obj* eval_list(obj* in, env* e) {
         return eval_and(rest, e);
     } else if(verb == sym_or) {
         return eval_or(rest, e);
+    } else if(verb == sym_lambda) {
+        obj* args = car(rest);
+        obj* body = cdr(rest);
+
+        return new_compound_proc(NULL, args, body, e);
     } else {
         obj* p = eval(verb, e);
         obj* args = eval_arguments(rest, e);
 
-        return p->proc_native.call(args);
+        if(p->type == PROC_NATIVE) {
+            return p->proc_native.call(args);
+        } else {
+            env* ext = env_extend(p->proc_compound.arg_list,
+                                  args,
+                                  p->proc_compound.env);
+
+            obj* ex = p->proc_compound.body;
+            obj* ret;
+            do {
+                ret = eval(car(ex), ext);
+            } while((ex = cdr(ex)) != val_nil);
+
+            return ret;
+        }
     }
 }
 
@@ -156,6 +182,7 @@ obj* eval(obj* in, env* e) {
     case SYMBOL:
         return eval_symbol(in, e);
     case PROC_NATIVE:
+    case PROC_COMPOUND:
     case NIL:
         die("Cannot evaluate procs or nil directly. Remember to quote/apply.");
         return NULL; // For clang.

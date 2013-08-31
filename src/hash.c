@@ -135,7 +135,7 @@ uint32_t hash_obj(obj* in) {
     case NUMBER:
         return (uint32_t)in->num_value;
     case BOOL:
-        return (uint32_t)in->bool_value;
+        return (uint32_t)in;
     case CHAR:
         return (uint32_t)in->char_value;
     case STRING:
@@ -150,6 +150,8 @@ uint32_t hash_obj(obj* in) {
         return hash_map(in->map_value);
     case PROC_NATIVE:
         return (uint32_t)in->proc_native.call; // Use function address.
+    case PROC_COMPOUND:
+        return (uint32_t)in;
     }
 }
 

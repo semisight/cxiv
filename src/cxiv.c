@@ -28,6 +28,7 @@ void make_globals() {
     sym_if = new_symbol("if");
     sym_and = new_symbol("and");
     sym_or = new_symbol("or");
+    sym_lambda = new_symbol("lambda");
 
     global_env = new_env();
 
@@ -35,6 +36,9 @@ void make_globals() {
     PUT_PROC("-", proc_sub, global_env);
     PUT_PROC("*", proc_mul, global_env);
     PUT_PROC("/", proc_div, global_env);
+    PUT_PROC("<", proc_lt, global_env);
+    PUT_PROC(">", proc_gt, global_env);
+    PUT_PROC("=", proc_eq, global_env);
 
     PUT_PROC("number?", proc_is_number, global_env);
     PUT_PROC("bool?", proc_is_bool, global_env);
@@ -45,6 +49,7 @@ void make_globals() {
     PUT_PROC("symbol?", proc_is_symbol, global_env);
     PUT_PROC("map?", proc_is_map, global_env);
     PUT_PROC("procedure?", proc_is_proc, global_env);
+    PUT_PROC("eq?", proc_poly_eq, global_env);
 
     PUT_PROC("number->char", proc_num_to_char, global_env);
     PUT_PROC("char->number", proc_char_to_num, global_env);
