@@ -3,7 +3,7 @@
 
 #include "obj.h"
 
-#define PUT_PROC(n, p, e) _define_var(n, new_proc(n, p), e)
+#define PUT_PROC(n, p, e) _define_var(new_symbol(n), new_proc(n, p), e)
 
 // General predicates
 

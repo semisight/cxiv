@@ -2,18 +2,15 @@
 #include "eval.h"
 
 obj* get_verb(obj* in) {
-    if(in->type != PAIR || car(in)->type != SYMBOL)
-        die("Cannot get verb for non-pair.");
-
     return car(in);
 }
 
-void _define_var(char* var, obj* val, env* e) {
-    env_define(e, var, val);
+void _define_var(obj* var, obj* val, env* e) {
+    env_define(e, var->symbol_value, val);
 }
 
-void _set_var(char* var, obj* val, env* e) {
-    env_set(e, var, val);
+void _set_var(obj* var, obj* val, env* e) {
+    env_set(e, var->symbol_value, val);
 }
 
 obj* define_var(obj* in, env* e) {
@@ -33,7 +30,7 @@ obj* define_var(obj* in, env* e) {
         val = new_compound_proc(var->symbol_value, args, body, e);
     }
 
-    _define_var(var->symbol_value, val, e);
+    _define_var(var, val, e);
     return var;
 }
 
@@ -47,7 +44,7 @@ obj* set_var(obj* in, env* e) {
     if(var->type != SYMBOL)
         die("Only symbols can be defined.");
 
-    _set_var(var->symbol_value, val, e);
+    _set_var(var, val, e);
     return val;
 }
 
@@ -151,7 +148,7 @@ obj* eval_list(obj* in, env* e) {
 
         if(p->type == PROC_NATIVE) {
             return p->proc_native.call(args);
-        } else {
+        } else if(p->type == PROC_COMPOUND) {
             env* ext = env_extend(p->proc_compound.arg_list,
                                   args,
                                   p->proc_compound.env);
@@ -163,6 +160,9 @@ obj* eval_list(obj* in, env* e) {
             } while((ex = cdr(ex)) != val_nil);
 
             return ret;
+        } else {
+            die("Cannot execute non-proc.");
+            return 0;
         }
     }
 }

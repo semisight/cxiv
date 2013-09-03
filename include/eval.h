@@ -11,9 +11,9 @@
 
 obj* get_verb(obj*);
 
-void _define_var(char*, obj*, env*);
+void _define_var(obj*, obj*, env*);
 
-void _set_var(char*, obj*, env*);
+void _set_var(obj*, obj*, env*);
 
 obj* define_var(obj*, env*);
 

@@ -73,13 +73,21 @@ int find_idx_key(map* m, void* key) {
 }
 
 int find_idx_empty(map* m, void* key) {
-    int idx = m->type == SYM ? hash_str(key) : hash_obj(key);
-    idx = idx % m->capacity;
+    int init = m->type == SYM ? hash_str(key) : hash_obj(key);
+    init = init % m->capacity;
 
-    while(m->map[idx].val)
-        idx++;
+    for(int i=0; i < m->capacity; i++) {
+        int idx = (init + i) % m->capacity; // Search at init first.
 
-    return idx;
+        cell* c = &m->map[idx];
+
+        if(!c->key)
+            return idx;
+    }
+
+    // If we get here, we didn't find any space (impossible).
+    die("Illegal state. Could not find space in map.");
+    return -1;
 }
 
 void map_put_nogrow(map* m, void* key, obj* val) {
