@@ -23,6 +23,7 @@ obj* sym_if;
 obj* sym_and;
 obj* sym_or;
 obj* sym_lambda;
+obj* sym_do;
 
 env* global_env;
 

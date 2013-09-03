@@ -29,6 +29,7 @@ void make_globals() {
     sym_and = new_symbol("and");
     sym_or = new_symbol("or");
     sym_lambda = new_symbol("lambda");
+    sym_do = new_symbol("do");
 
     global_env = new_env();
 

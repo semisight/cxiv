@@ -25,6 +25,8 @@ obj* eval_and(obj*, env*);
 
 obj* eval_or(obj*, env*);
 
+obj* eval_lines(obj*, env*);
+
 obj* eval_map(obj*, env*);
 
 obj* eval_symbol(obj*, env*);

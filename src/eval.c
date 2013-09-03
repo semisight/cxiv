@@ -98,6 +98,16 @@ obj* eval_or(obj* in, env* e) {
     return arg;
 }
 
+obj* eval_lines(obj* in, env* e) {
+    obj* ret;
+
+    do {
+        ret = eval(car(in), e);
+    } while((in = cdr(in)) != val_nil);
+
+    return ret;
+}
+
 obj* eval_map(obj* in, env* e) {
     map_iter i = map_start();
     cell* cur;
@@ -142,6 +152,8 @@ obj* eval_list(obj* in, env* e) {
         obj* body = cdr(rest);
 
         return new_compound_proc(NULL, args, body, e);
+    } else if(verb == sym_do) {
+        return eval_lines(rest, e);
     } else {
         obj* p = eval(verb, e);
         obj* args = eval_arguments(rest, e);
@@ -153,13 +165,7 @@ obj* eval_list(obj* in, env* e) {
                                   args,
                                   p->proc_compound.env);
 
-            obj* ex = p->proc_compound.body;
-            obj* ret;
-            do {
-                ret = eval(car(ex), ext);
-            } while((ex = cdr(ex)) != val_nil);
-
-            return ret;
+            return eval_lines(p->proc_compound.body, ext);
         } else {
             die("Cannot execute non-proc.");
             return 0;
