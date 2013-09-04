@@ -1,6 +1,7 @@
 #include "cxiv.h"
 #include "proc.h"
 #include "read.h"
+#include "eval.h"
 
 // General predicates
 

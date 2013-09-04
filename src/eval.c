@@ -98,6 +98,25 @@ obj* eval_or(obj* in, env* e) {
     return arg;
 }
 
+obj* eval_apply(obj* in, env* e) {
+    if(in == val_nil || list_len(in) < 2)
+        die("apply takes at least 2 arguments.");
+
+    obj* p = eval(car(in), e);
+    obj* args = eval_arguments(cdr(in), e);
+    obj* cur = args;
+
+    while(cddr(cur) != val_nil) {
+        cur = cdr(cur);
+    }
+
+    // Append last element (in car) to the current list (replace cdr).
+    cur->pair.cdr = cadr(cur);
+
+    // then evaluate it as usual.
+    return eval(cons(p, args), e);
+}
+
 obj* eval_lines(obj* in, env* e) {
     obj* ret;
 
@@ -131,6 +150,21 @@ obj* eval_arguments(obj* in, env* e) {
     return cons(eval(car(in), e), eval_arguments(cdr(in), e));
 }
 
+obj* eval_proc(obj* p, obj* args, env* e) {
+    if(p->type == PROC_NATIVE) {
+        return p->proc_native.call(args);
+    } else if(p->type == PROC_COMPOUND) {
+        env* ext = env_extend(p->proc_compound.arg_list,
+                              args,
+                              p->proc_compound.env);
+
+        return eval_lines(p->proc_compound.body, ext);
+    } else {
+        die("Cannot execute non-proc.");
+        return 0;
+    }
+}
+
 obj* eval_list(obj* in, env* e) {
     obj* verb = get_verb(in);
     obj* rest = cdr(in);
@@ -154,22 +188,13 @@ obj* eval_list(obj* in, env* e) {
         return new_compound_proc(NULL, args, body, e);
     } else if(verb == sym_do) {
         return eval_lines(rest, e);
+    } else if(verb == sym_apply) {
+        return eval_apply(rest, e);
     } else {
         obj* p = eval(verb, e);
         obj* args = eval_arguments(rest, e);
 
-        if(p->type == PROC_NATIVE) {
-            return p->proc_native.call(args);
-        } else if(p->type == PROC_COMPOUND) {
-            env* ext = env_extend(p->proc_compound.arg_list,
-                                  args,
-                                  p->proc_compound.env);
-
-            return eval_lines(p->proc_compound.body, ext);
-        } else {
-            die("Cannot execute non-proc.");
-            return 0;
-        }
+        return eval_proc(p, args, e);
     }
 }
 
@@ -180,6 +205,8 @@ obj* eval(obj* in, env* e) {
     case BOOL:
     case CHAR:
     case STRING:
+    case PROC_NATIVE:
+    case PROC_COMPOUND:
         return in;
     case PAIR:
         return eval_list(in, e);
@@ -187,8 +214,6 @@ obj* eval(obj* in, env* e) {
         return eval_map(in, e);
     case SYMBOL:
         return eval_symbol(in, e);
-    case PROC_NATIVE:
-    case PROC_COMPOUND:
     case NIL:
         die("Cannot evaluate procs or nil directly. Remember to quote/apply.");
         return NULL; // For clang.
