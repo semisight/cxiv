@@ -11,6 +11,32 @@ obj* new_obj(obj_type type) {
     return o;
 }
 
+obj* clone_obj(obj* in) {
+    obj* rv;
+
+    switch(in->type) {
+    case NUMBER:
+        return new_number(in->num_value);
+    case BOOL:
+    case SYMBOL:
+    case NIL:
+    case PROC_NATIVE:
+    case PROC_COMPOUND:
+        return in;
+    case CHAR:
+        return new_char(in->char_value);
+    case STRING:
+        return new_string(in->string_value);
+    case PAIR:
+        return cons(clone_obj(car(in)), clone_obj(cdr(in)));
+    case MAP:
+        rv = new_obj(MAP);
+        rv->map_value = map_clone(in->map_value);
+
+        return rv;
+    }
+}
+
 obj* new_number(double input) {
     obj* o = new_obj(NUMBER);
     o->num_value = input;

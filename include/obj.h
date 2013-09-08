@@ -59,6 +59,8 @@ typedef struct obj_t {
 
 obj* new_obj(obj_type type);
 
+obj* clone_obj(obj*);
+
 obj* new_number(double input);
 
 obj* new_boolean(int input);

@@ -71,4 +71,10 @@ obj* proc_set_cdr(obj*);
 
 obj* proc_list(obj*);
 
+// Map ops
+
+obj* proc_get(obj*);
+
+obj* proc_put(obj*);
+
 #endif

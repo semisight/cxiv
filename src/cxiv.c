@@ -66,6 +66,9 @@ void make_globals() {
     PUT_PROC("set-car!", proc_set_car, global_env);
     PUT_PROC("set-cdr!", proc_set_cdr, global_env);
     PUT_PROC("list", proc_list, global_env);
+
+    PUT_PROC("put", proc_put, global_env);
+    PUT_PROC("get", proc_get, global_env);
 }
 
 int main(int argc, char const *argv[]) {

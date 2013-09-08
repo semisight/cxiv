@@ -38,6 +38,8 @@ uint32_t hash_obj(obj*);
 
 map* new_map(map_type);
 
+map* map_clone(map*);
+
 void map_put(map*, void*, obj*);
 
 obj* map_get(map*, void*);

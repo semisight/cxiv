@@ -246,3 +246,34 @@ obj* proc_set_cdr(obj* args) {
 obj* proc_list(obj* args) {
     return args;
 }
+
+// Map ops
+
+obj* proc_get(obj* args) {
+    if(args == val_nil || list_len(args) != 2)
+        die("get takes 2 arguments.");
+
+    obj* m = car(args);
+    obj* key = cadr(args);
+
+    obj* rv = map_get(m->map_value, key);
+
+    if(rv)
+        return rv;
+    else
+        return val_nil;
+}
+
+obj* proc_put(obj* args) {
+    if(args == val_nil || list_len(args) != 3)
+        die("put takes 3 arguments.");
+
+    obj* m = car(args);
+    obj* key = cadr(args);
+    obj* val = caddr(args);
+    obj* rv = clone_obj(m);
+
+    map_put(rv->map_value, key, val);
+
+    return rv;
+}

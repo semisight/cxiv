@@ -182,6 +182,18 @@ map* new_map(map_type t) {
     return m;
 }
 
+map* map_clone(map* in) {
+    // Copy all elements of the input map.
+    map* rv = new_map(in->type);
+    map_iter i = map_start();
+    cell* cur;
+
+    while((cur = map_next(in, i)))
+        map_put(rv, cur->key, cur->val);
+
+    return rv;
+}
+
 void map_put(map* m, void* key, obj* val) {
     // First, check if we're too full.
     if((double)m->size > (MAX_FILL * m->capacity))
