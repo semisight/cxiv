@@ -77,4 +77,10 @@ obj* proc_get(obj*);
 
 obj* proc_put(obj*);
 
+// Env ops
+
+obj* proc_global_env(obj*);
+
+obj* proc_env(obj*);
+
 #endif

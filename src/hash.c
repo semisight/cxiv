@@ -151,6 +151,7 @@ uint32_t hash_obj(obj* in) {
     case NIL:
         return 42; // Because why not?
     case PAIR:
+    case ENV:
         return hash_obj(car(in)) + hash_obj(cdr(in));
     case SYMBOL:
         return hash_str(in->symbol_value);

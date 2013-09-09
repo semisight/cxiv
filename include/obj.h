@@ -22,7 +22,8 @@ typedef enum {
     SYMBOL,
     MAP,
     PROC_NATIVE,
-    PROC_COMPOUND
+    PROC_COMPOUND,
+    ENV
 } obj_type;
 
 typedef struct obj_t* (*proc)(struct obj_t*);

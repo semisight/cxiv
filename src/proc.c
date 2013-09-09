@@ -277,3 +277,19 @@ obj* proc_put(obj* args) {
 
     return rv;
 }
+
+// Env ops
+
+obj* proc_global_env(obj* in) {
+    if(in != val_nil)
+        die("global-env takes no arguments.");
+
+    return global_env;
+}
+
+obj* proc_env(obj* in) {
+    if(in != val_nil)
+        die("env takes no arguments.");
+
+    return new_standard_env();
+}

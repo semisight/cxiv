@@ -27,6 +27,7 @@ obj* clone_obj(obj* in) {
         return new_char(in->char_value);
     case STRING:
         return new_string(in->string_value);
+    case ENV:
     case PAIR:
         return cons(clone_obj(car(in)), clone_obj(cdr(in)));
     case MAP:
@@ -119,14 +120,14 @@ obj* cons(obj* first, obj* second) {
 }
 
 obj* car(obj* in) {
-    if(in->type != PAIR)
+    if(in->type != PAIR && in->type != ENV)
         die("Cannot get car of non-pair.");
 
     return in->pair.car;
 }
 
 obj* cdr(obj* in) {
-    if(in->type == PAIR)
+    if(in->type == PAIR || in->type == ENV)
         return in->pair.cdr;
     if(in->type == NIL)
         return val_nil;
@@ -169,6 +170,7 @@ int is_equal(obj* a, obj* b) {
     case NIL:
         return true; // Must both be nil
     case PAIR:
+    case ENV:
         return is_equal(car(a), car(b)) && is_equal(cdr(a), cdr(b));
     case MAP:
         if(a->map_value->size != b->map_value->size) // If sizes are equal...

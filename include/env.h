@@ -5,6 +5,8 @@
 
 env* new_env();
 
+env* new_standard_env();
+
 env* env_extend(obj*, obj*, env*);
 
 void env_define(env*, char*, obj*);

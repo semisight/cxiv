@@ -31,7 +31,10 @@ void print_map(obj* in) {
         cur = next;
         next = map_next(in->map_value, i);
 
-        print(cur->key);
+        if(in->map_value->type == OBJ)
+            print(cur->key);
+        else
+            printf("%s", cur->key);
         printf(": ");
         print(cur->val);
 
@@ -86,5 +89,9 @@ void print(obj* in) {
         break;
     case PROC_COMPOUND:
         printf("#<procedure %s>", in->proc_compound.name);
+        break;
+    case ENV:
+        printf("#<environment>");
+        break;
     }
 }

@@ -190,6 +190,10 @@ obj* eval_list(obj* in, env* e) {
         return eval_lines(rest, e);
     } else if(verb == sym_apply) {
         return eval_apply(rest, e);
+    } else if(verb == sym_eval) {
+        obj* args = eval_arguments(rest, e);
+
+        return eval(car(args), cadr(args));
     } else {
         obj* p = eval(verb, e);
         obj* args = eval_arguments(rest, e);
@@ -207,6 +211,7 @@ obj* eval(obj* in, env* e) {
     case STRING:
     case PROC_NATIVE:
     case PROC_COMPOUND:
+    case ENV:
         return in;
     case PAIR:
         return eval_list(in, e);
