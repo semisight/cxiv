@@ -44,7 +44,7 @@ void map_put(map*, void*, obj*);
 
 obj* map_get(map*, void*);
 
-void map_del(map*, void*);
+//void map_del(map*, void*);
 
 map_iter map_start();
 

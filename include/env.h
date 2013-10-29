@@ -5,6 +5,8 @@
 
 env* new_env();
 
+void del_env(env*);
+
 env* new_standard_env();
 
 env* env_extend(obj*, obj*, env*);

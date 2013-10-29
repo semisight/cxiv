@@ -38,11 +38,54 @@ obj* clone_obj(obj* in) {
     }
 }
 
+// low level object deletion method. Not meant to be called directly.
+// ***Not responsible for freeing children of any kind!***
+void _del_obj(obj* o) {
+    free(o);
+}
+
+// polymorphic high-level routine for use in other objects.
+void del_obj(obj* o) {
+    switch(o->type) {
+    case NUMBER:
+        del_number(o);
+        break;
+    case BOOL:
+    case NIL:
+    case SYMBOL:
+    case PROC_NATIVE:
+        // No-op.
+        break;
+    case PROC_COMPOUND:
+        //
+        break;
+    case CHAR:
+        del_char(o);
+        break;
+    case STRING:
+        del_string(o);
+        break;
+    case ENV:
+        del_env(o);
+        break;
+    case PAIR:
+        del_list(o);
+        break;
+    case MAP:
+        // TODO
+        break;
+    }
+}
+
 obj* new_number(double input) {
     obj* o = new_obj(NUMBER);
     o->num_value = input;
 
     return o;
+}
+
+void del_number(obj* o) {
+    _del_obj(o);
 }
 
 obj* new_boolean(int input) {
@@ -56,6 +99,10 @@ obj* new_char(char input) {
     return o;
 }
 
+void del_char(obj* o) {
+    _del_obj(o);
+}
+
 // Will *not* own the input. Req'd because it may accept const char*s which it
 // should not free.
 obj* new_string(char* input) {
@@ -63,6 +110,11 @@ obj* new_string(char* input) {
     o->string_value = fulcpy(input);
 
     return o;
+}
+
+void del_string(obj* o) {
+    free(o->string_value);
+    _del_obj(o);
 }
 
 // Will *not* own the input. Req'd because it may accept const char*s which it
@@ -87,6 +139,10 @@ obj* new_omap() {
     return o;
 }
 
+void del_omap(obj* o) {
+
+}
+
 obj* new_proc(char* name, proc input) {
     obj* o = new_obj(PROC_NATIVE);
     o->proc_native.name = fulcpy(name);
@@ -103,9 +159,9 @@ obj* new_compound_proc(char* name, obj* args, obj* body, env* e) {
     else
         o->proc_compound.name = "lambda";
 
-    o->proc_compound.arg_list = args;
-    o->proc_compound.body = body;
-    o->proc_compound.env = e;
+    o->proc_compound.arg_list = args; // deletable
+    o->proc_compound.body = body; // deletable
+    o->proc_compound.env = e; // ??
 
     return o;
 }
@@ -117,6 +173,11 @@ obj* cons(obj* first, obj* second) {
     o->pair.cdr = second;
 
     return o;
+}
+
+void del_list(obj* o) {
+    del_obj(car(o));
+    del_obj(cdr(o));
 }
 
 obj* car(obj* in) {

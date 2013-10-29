@@ -62,21 +62,33 @@ obj* new_obj(obj_type type);
 
 obj* clone_obj(obj*);
 
+void del_obj(obj*);
+
 obj* new_number(double input);
+
+void del_number(obj*);
 
 obj* new_boolean(int input);
 
 obj* new_char(char input);
 
+void del_char(obj*);
+
 obj* new_string(char* input);
 
+void del_string(obj*);
+
 obj* new_omap();
+
+void del_omap(obj*);
 
 obj* new_proc(char*, proc);
 
 obj* new_compound_proc(char*, obj*, obj*, env*);
 
 obj* cons(obj*, obj*);
+
+void del_list(obj*);
 
 obj* car(obj*);
 

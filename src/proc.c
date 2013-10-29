@@ -175,21 +175,21 @@ obj* proc_div(obj* args) {
 }
 
 obj* proc_lt(obj* args) {
-    if(args == val_nil || list_len(args) != 2)
+    if(list_len(args) != 2)
         die("< takes 2 arguments.");
 
     return car(args)->num_value < cadr(args)->num_value ? val_true : val_false;
 }
 
 obj* proc_gt(obj* args) {
-    if(args == val_nil || list_len(args) != 2)
+    if(list_len(args) != 2)
         die("> takes 2 arguments.");
 
     return car(args)->num_value > cadr(args)->num_value ? val_true : val_false;
 }
 
 obj* proc_eq(obj* args) {
-    if(args == val_nil || list_len(args) != 2)
+    if(list_len(args) != 2)
         die("= takes 2 arguments.");
 
     return car(args)->num_value == cadr(args)->num_value ? val_true : val_false;
@@ -198,7 +198,7 @@ obj* proc_eq(obj* args) {
 // List ops
 
 obj* proc_cons(obj* args) {
-    if(args == val_nil || list_len(args) != 2)
+    if(list_len(args) != 2)
         die("cons takes 2 arguments.");
 
     obj* ncar = car(args);
@@ -208,21 +208,21 @@ obj* proc_cons(obj* args) {
 }
 
 obj* proc_car(obj* args) {
-    if(args == val_nil || list_len(args) != 1)
+    if(list_len(args) != 1)
         die("car takes 1 argument.");
 
     return caar(args);
 }
 
 obj* proc_cdr(obj* args) {
-    if(args == val_nil || list_len(args) != 1)
+    if(list_len(args) != 1)
         die("cdr takes 1 argument.");
 
     return cdar(args);
 }
 
 obj* proc_set_car(obj* args) {
-    if(args == val_nil || list_len(args) != 2)
+    if(list_len(args) != 2)
         die("set-car! takes 2 arguments.");
 
     obj* ncar = car(args);
@@ -233,7 +233,7 @@ obj* proc_set_car(obj* args) {
 }
 
 obj* proc_set_cdr(obj* args) {
-    if(args == val_nil || list_len(args) != 2)
+    if(list_len(args) != 2)
         die("set-cdr! takes 2 arguments.");
 
     obj* ncdr = car(args);
@@ -247,10 +247,64 @@ obj* proc_list(obj* args) {
     return args;
 }
 
+obj* proc_reverse(obj* in) {
+    if(list_len(in) != 1)
+        die("reverse takes one argument.");
+
+    obj* list = car(in);
+
+    if(list->type != PAIR)
+        die("bad argument for list.");
+
+    obj* rv = val_nil;
+
+    while(list != val_nil) {
+        rv = cons(car(list), rv);
+        list = cdr(list);
+    }
+
+    return rv;
+}
+
+// String ops
+
+obj* proc_split(obj* args) {
+    if(list_len(args) != 2) 
+        die("split takes 2 arguments.");
+
+    obj* delim_obj = car(args);
+    obj* str = cadr(args);
+
+    if(delim_obj->type != CHAR || str->type != STRING)
+        die("bad arguments for split.");
+
+    char* c = str->string_value;
+    char delim = delim_obj->char_value;
+
+    obj* rv = val_nil;
+    char* raw = malloc(sizeof(char) * strlen(str->string_value)); // Nice safe value.
+    char* raw_init = raw;
+
+    for(;; c++) {
+        if(*c == delim || *c == '\0') {
+            *raw = '\0';
+            rv = cons(new_string(raw_init), rv);
+            raw = raw_init = malloc(sizeof(char) * strlen(str->string_value));
+
+            if(*c == '\0')
+                break;
+        } else {
+            *raw++ = *c;
+        }
+    }
+
+    return proc_reverse(cons(rv, val_nil));
+}
+
 // Map ops
 
 obj* proc_get(obj* args) {
-    if(args == val_nil || list_len(args) != 2)
+    if(list_len(args) != 2)
         die("get takes 2 arguments.");
 
     obj* m = car(args);
@@ -265,7 +319,7 @@ obj* proc_get(obj* args) {
 }
 
 obj* proc_put(obj* args) {
-    if(args == val_nil || list_len(args) != 3)
+    if(list_len(args) != 3)
         die("put takes 3 arguments.");
 
     obj* m = car(args);

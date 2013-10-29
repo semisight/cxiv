@@ -39,6 +39,10 @@ env* new_env() {
     return env_extend(val_nil, val_nil, val_nil);
 }
 
+void del_env(env* e) {
+    del_list(e);
+}
+
 env* new_standard_env() {
     env* e = new_env();
 
@@ -74,6 +78,9 @@ env* new_standard_env() {
     PUT_PROC("set-car!", proc_set_car, e);
     PUT_PROC("set-cdr!", proc_set_cdr, e);
     PUT_PROC("list", proc_list, e);
+    PUT_PROC("reverse", proc_reverse, e);
+
+    PUT_PROC("split", proc_split, e);
 
     PUT_PROC("put", proc_put, e);
     PUT_PROC("get", proc_get, e);

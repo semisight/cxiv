@@ -71,6 +71,12 @@ obj* proc_set_cdr(obj*);
 
 obj* proc_list(obj*);
 
+obj* proc_reverse(obj*);
+
+// String ops
+
+obj* proc_split(obj*);
+
 // Map ops
 
 obj* proc_get(obj*);
